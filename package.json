@@ -1,0 +1,21 @@
+{
+  "name": "aptscrape",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.15.3",
+    "cheerio": "^0.22.0",
+    "csv": "^1.1.1",
+    "csv-parse": "^1.2.0",
+    "csvtojson": "^1.1.4",
+    "fast-csv": "^2.4.0",
+    "json2csv": "^3.7.3"
+  }
+}
