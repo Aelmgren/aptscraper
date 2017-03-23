@@ -6,34 +6,29 @@ let json2csv = require('json2csv');
 
 let test_url = 'https://www.apartments.com/bel-air-willow-bend-plano-tx/l7tyrbe/';
 const csv =require('csvtojson');
-
-var csvData = []
+let scrapedNum = 20;
+var csvData = [];
+//var jsonFile = [];
 csv()
 .fromFile('./dfw-master.csv')
 .on('json',(jsonObj) =>{
   csvData.push(jsonObj);
-console.log(jsonObj);
-console.log('JSONOBJ DONE -----------');
+//console.log(jsonObj);
+//console.log('JSONOBJ DONE -----------');
 })
 .on('done',(err) =>{
   if (err) throw err;
-  console.log('end');
-});
+  console.log('[');
 
-var promises = [];
-axios.all(
-
-
-let fields = ['amenities','services','specFeat','pets','imageUrls'];
-
-
-
-
-
-
-
-
-axios.get(test_url).then( (res) => {
+let fields = ['amenities','services','specFeat','pets','imageUrls','propertyUrl'];
+var jsonFile = [];
+var url = "";
+for (i=0;i<scrapedNum;i++){
+url = csvData[i].url;
+urlScrape(url, i);
+}
+function urlScrape(url, index){
+axios.get(url).then( (res) => {
   let $ = cheerio.load(res.data);
 
   let amen = {};
@@ -53,17 +48,33 @@ amen['services'] = services;
 amen['specFeat'] = specFeat;
 amen['pets'] = pets;
 amen['imageUrls'] = imageUrls;
+amen['propertyUrl'] = url;
 return amen;
 })
 .then( (amen) => {
-console.log("JSON RESULT -------: ");
-console.log(amen);
-console.log("CSV RESULT --------: ");
-var result = json2csv({ data: amen, fields: fields });
-console.log(result);
+//console.log("JSON RESULT -------: ");
+console.log(JSON.stringify(amen, null, 4));
+if (index == scrapedNum - 1) {
+ console.log(']');
+} else {
+console.log(',');
+}
+//console.log("CSV RESULT --------: ");
+jsonFile.push(amen);
+//outputFile.push(amen);
+//var result = json2csv({ data: amen, fields: fields });
+//console.log(result);
 
-fs.writeFile('testfile.csv', result, function(err) {
+});
+}
+//console.log("JSON FILE OUTPUT --------:");
+//console.log(jsonFile);
+
+//var result = json2csv({ data: jsonFile, fields: fields }); 
+
+fs.writeFile('testfile1.csv', jsonFile, function(err) {
   if (err) throw err;
-  console.log('file saved');
-  });
+  //console.log('done');
+});
+
 });
